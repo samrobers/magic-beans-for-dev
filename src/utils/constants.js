@@ -8,6 +8,7 @@ export const DEFAULT_CONFIG = {
   showGrid: true,
   legendPosition: 'top',
   stacked: false,
+  diverging: false,
   labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4'],
   datasets: [
     { 
@@ -21,7 +22,34 @@ export const DEFAULT_CONFIG = {
     }
   ],
   xAxis: { display: true, min: '', max: '', reverse: false, beginAtZero: true },
-  yAxis: { display: true, min: '', max: '', reverse: false, beginAtZero: true }
+  yAxis: { display: true, min: '', max: '', reverse: false, beginAtZero: true },
+  // Additional Chart.js options
+  animations: {
+    enabled: true,
+    duration: 1000,
+    easing: 'easeInOutQuart'
+  },
+  tooltip: {
+    enabled: true,
+    mode: 'index',
+    intersect: false,
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    titleColor: '#fff',
+    bodyColor: '#fff'
+  },
+  interaction: {
+    mode: 'nearest',
+    intersect: false
+  },
+  elements: {
+    point: {
+      radius: 4,
+      hoverRadius: 6
+    },
+    line: {
+      tension: 0.1
+    }
+  }
 };
 
 export const CHART_TYPES = ['bar', 'line'];
@@ -32,8 +60,72 @@ export const DATASET_COLORS = ['#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#14b
 export const BACKGROUND_COLORS = ['#d1fae5', '#fef3c7', '#ede9fe', '#fce7f3', '#ccfbf1', '#fecdd3'];
 
 export const TABS = [
+  { id: 'templates', label: 'Templates' },
   { id: 'basic', label: 'Basic' },
   { id: 'axes', label: 'Axes' },
   { id: 'data', label: 'Data' },
-  { id: 'advanced', label: 'Advanced' }
+  { id: 'advanced', label: 'Advanced' },
+  { id: 'animations', label: 'Animations' }
 ];
+
+export const ANIMATION_EASINGS = [
+  'linear', 'easeInQuad', 'easeOutQuad', 'easeInOutQuad',
+  'easeInCubic', 'easeOutCubic', 'easeInOutCubic',
+  'easeInQuart', 'easeOutQuart', 'easeInOutQuart',
+  'easeInQuint', 'easeOutQuint', 'easeInOutQuint',
+  'easeInSine', 'easeOutSine', 'easeInOutSine',
+  'easeInExpo', 'easeOutExpo', 'easeInOutExpo',
+  'easeInCirc', 'easeOutCirc', 'easeInOutCirc',
+  'easeInElastic', 'easeOutElastic', 'easeInOutElastic',
+  'easeInBack', 'easeOutBack', 'easeInOutBack',
+  'easeInBounce', 'easeOutBounce', 'easeInOutBounce'
+];
+
+export const TOOLTIP_MODES = ['point', 'nearest', 'index', 'dataset', 'x', 'y'];
+export const INTERACTION_MODES = ['point', 'nearest', 'index', 'dataset', 'x', 'y'];
+
+// Chart Templates
+export const CHART_TEMPLATES = {
+  divergingBar: {
+    name: 'Diverging Bar Chart',
+    description: 'Perfect for risk vs. resiliency, before vs. after comparisons',
+    config: {
+      type: 'bar',
+      orientation: 'horizontal',
+      title: 'Risk & Resiliency Calculator',
+      showLegend: true,
+      showGrid: true,
+      legendPosition: 'top',
+      stacked: false,
+      diverging: true,
+      labels: ['Fighter', 'Fidelity', 'Fitness', 'Family', 'Finances', 'Future', 'Critical Stressors'],
+      datasets: [
+        {
+          name: 'Risk Factors',
+          data: [-50, -60, -30, -40, -70, -50, -80],
+          color: '#ef4444',
+          borderWidth: 0,
+          backgroundFill: false,
+          backgroundFillColor: '#fecaca',
+          backgroundFillMax: 100
+        },
+        {
+          name: 'Resiliency',
+          data: [70, 80, 85, 60, 40, 65, 30],
+          color: '#10b981',
+          borderWidth: 0,
+          backgroundFill: false,
+          backgroundFillColor: '#d1fae5',
+          backgroundFillMax: 100
+        }
+      ],
+      xAxis: { display: true, min: '-100', max: '100', reverse: false, beginAtZero: true },
+      yAxis: { display: true, min: '', max: '', reverse: false, beginAtZero: true }
+    }
+  },
+  simpleBar: {
+    name: 'Simple Bar Chart',
+    description: 'Basic vertical bar chart',
+    config: DEFAULT_CONFIG
+  }
+};

@@ -6,27 +6,34 @@ export const generateChartJSConfig = (config) => {
   config.datasets.forEach(ds => {
     if (ds.backgroundFill) {
       datasetsWithBg.push({
-        label: `${ds.name} (Max)`,
+        label: `${ds.name} (Background)`,
         data: Array(config.labels.length).fill(ds.backgroundFillMax),
         backgroundColor: ds.backgroundFillColor,
         borderColor: ds.backgroundFillColor,
         borderWidth: 0,
-        order: 2
+        order: 2,
+        barPercentage: 1.0,
+        categoryPercentage: 1.0
       });
     }
     
     datasetsWithBg.push({
       label: ds.name,
       data: ds.data,
-      backgroundColor: ds.color + 'CC',
+      backgroundColor: ds.color + (config.type === 'line' ? '00' : 'CC'),
       borderColor: ds.color,
       borderWidth: ds.borderWidth,
-      order: 1
+      order: 1,
+      fill: config.type === 'line' ? false : undefined,
+      tension: config.type === 'line' ? 0.1 : undefined
     });
   });
 
+  // Updated chart type for Chart.js v3+
+  const chartType = config.type === 'line' ? 'line' : 'bar';
+
   const chartConfig = {
-    type: config.type === 'line' ? 'line' : (config.orientation === 'horizontal' ? 'horizontalBar' : 'bar'),
+    type: chartType,
     data: {
       labels: config.labels,
       datasets: datasetsWithBg
@@ -34,6 +41,11 @@ export const generateChartJSConfig = (config) => {
     options: {
       responsive: true,
       maintainAspectRatio: true,
+      indexAxis: config.orientation === 'horizontal' && config.type === 'bar' ? 'y' : 'x',
+      animation: config.animations?.enabled ? {
+        duration: config.animations.duration || 1000,
+        easing: config.animations.easing || 'easeInOutQuart'
+      } : false,
       plugins: {
         title: {
           display: true,
@@ -43,39 +55,79 @@ export const generateChartJSConfig = (config) => {
         legend: {
           display: config.showLegend,
           position: config.legendPosition
-        }
+        },
+        tooltip: config.tooltip?.enabled !== false ? {
+          enabled: true,
+          mode: config.tooltip?.mode || 'index',
+          intersect: config.tooltip?.intersect || false,
+          backgroundColor: config.tooltip?.backgroundColor || 'rgba(0,0,0,0.8)',
+          titleColor: config.tooltip?.titleColor || '#fff',
+          bodyColor: config.tooltip?.bodyColor || '#fff'
+        } : { enabled: false }
       },
+      interaction: {
+        mode: config.interaction?.mode || 'nearest',
+        intersect: config.interaction?.intersect || false
+      },
+      elements: config.elements || {},
       scales: {}
     }
   };
 
+  // Configure scales for Chart.js v3+ syntax
   if (config.orientation === 'horizontal' && config.type === 'bar') {
-    chartConfig.options.scales.xAxes = [{
+    chartConfig.options.scales.x = {
+      type: 'linear',
       display: config.xAxis.display,
       grid: { display: config.showGrid },
-      ticks: {
-        reverse: config.xAxis.reverse,
-        beginAtZero: config.xAxis.beginAtZero
-      }
-    }];
-    if (config.xAxis.min !== '') chartConfig.options.scales.xAxes[0].ticks.min = parseFloat(config.xAxis.min);
-    if (config.xAxis.max !== '') chartConfig.options.scales.xAxes[0].ticks.max = parseFloat(config.xAxis.max);
+      beginAtZero: config.xAxis.beginAtZero,
+      reverse: config.xAxis.reverse,
+      stacked: config.stacked,
+      // Add center line for diverging charts
+      ...(config.diverging && {
+        grid: {
+          display: config.showGrid,
+          color: (context) => {
+            return context.tick.value === 0 ? '#374151' : '#e5e7eb40';
+          },
+          lineWidth: (context) => {
+            return context.tick.value === 0 ? 2 : 1;
+          }
+        }
+      })
+    };
+    if (config.xAxis.min !== '') chartConfig.options.scales.x.min = parseFloat(config.xAxis.min);
+    if (config.xAxis.max !== '') chartConfig.options.scales.x.max = parseFloat(config.xAxis.max);
     
-    chartConfig.options.scales.yAxes = [{
+    chartConfig.options.scales.y = {
+      type: 'category',
       display: config.yAxis.display,
       stacked: config.stacked,
       grid: { display: false }
-    }];
+    };
   } else {
     chartConfig.options.scales.x = {
+      type: config.type === 'line' ? 'category' : 'category',
       display: config.xAxis.display,
       grid: { display: config.showGrid },
       stacked: config.stacked
     };
     
     chartConfig.options.scales.y = {
+      type: 'linear',
       display: config.yAxis.display,
-      grid: { display: config.showGrid },
+      grid: { 
+        display: config.showGrid,
+        // Add center line for diverging vertical charts
+        ...(config.diverging && {
+          color: (context) => {
+            return context.tick.value === 0 ? '#374151' : '#e5e7eb40';
+          },
+          lineWidth: (context) => {
+            return context.tick.value === 0 ? 2 : 1;
+          }
+        })
+      },
       beginAtZero: config.yAxis.beginAtZero,
       reverse: config.yAxis.reverse,
       stacked: config.stacked
