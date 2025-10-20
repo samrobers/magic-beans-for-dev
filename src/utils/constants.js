@@ -52,7 +52,7 @@ export const DEFAULT_CONFIG = {
   }
 };
 
-export const CHART_TYPES = ['bar', 'line'];
+export const CHART_TYPES = ['bar', 'line', 'pie', 'doughnut'];
 export const ORIENTATIONS = ['vertical', 'horizontal'];
 export const LEGEND_POSITIONS = ['top', 'bottom', 'left', 'right'];
 
@@ -127,5 +127,63 @@ export const CHART_TEMPLATES = {
     name: 'Simple Bar Chart',
     description: 'Basic vertical bar chart',
     config: DEFAULT_CONFIG
+  },
+  simplePie: {
+    name: 'Pie Chart',
+    description: 'Classic pie chart for showing proportions',
+    config: {
+      type: 'pie',
+      orientation: 'vertical',
+      title: 'Market Share Distribution',
+      showLegend: true,
+      showGrid: false,
+      legendPosition: 'right',
+      stacked: false,
+      diverging: false,
+      labels: ['Chrome', 'Safari', 'Firefox', 'Edge', 'Other'],
+      datasets: [
+        {
+          name: 'Browser Usage',
+          data: [65, 20, 8, 5, 2],
+          color: '#3b82f6',
+          borderWidth: 2,
+          backgroundFill: false,
+          backgroundFillColor: '#dbeafe',
+          backgroundFillMax: 100,
+          backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']
+        }
+      ],
+      xAxis: { display: false, min: '', max: '', reverse: false, beginAtZero: true },
+      yAxis: { display: false, min: '', max: '', reverse: false, beginAtZero: true }
+    }
+  },
+  doughnutChart: {
+    name: 'Doughnut Chart',
+    description: 'Doughnut chart with center cutout',
+    config: {
+      type: 'doughnut',
+      orientation: 'vertical',
+      title: 'Revenue by Category',
+      showLegend: true,
+      showGrid: false,
+      legendPosition: 'bottom',
+      stacked: false,
+      diverging: false,
+      labels: ['Product Sales', 'Services', 'Subscriptions', 'Other'],
+      datasets: [
+        {
+          name: 'Revenue',
+          data: [450, 320, 180, 50],
+          color: '#10b981',
+          borderWidth: 2,
+          backgroundFill: false,
+          backgroundFillColor: '#d1fae5',
+          backgroundFillMax: 100,
+          backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444']
+        }
+      ],
+      xAxis: { display: false, min: '', max: '', reverse: false, beginAtZero: true },
+      yAxis: { display: false, min: '', max: '', reverse: false, beginAtZero: true }
+    }
   }
 };

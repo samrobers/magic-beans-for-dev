@@ -3,8 +3,8 @@ import { CHART_TEMPLATES } from '../utils/constants';
 
 const TemplatesTab = ({ onApplyTemplate }) => {
   return (
-    <div className="bg-white/10 backdrop-blur-sm rounded-lg shadow-xl p-6 space-y-4 border border-white/20">
-      <h2 className="text-2xl font-bold text-white">📋 Chart Templates</h2>
+    <div className="bg-amber-900/20 backdrop-blur-sm rounded-lg shadow-xl p-6 space-y-4 border border-amber-600/30">
+      <h2 className="text-2xl font-bold text-white">📋 Wanted Posters</h2>
       <p className="text-purple-200 text-sm">Quick start with pre-configured chart types</p>
       
       <div className="space-y-4">
@@ -17,14 +17,14 @@ const TemplatesTab = ({ onApplyTemplate }) => {
               </div>
               <button
                 onClick={() => onApplyTemplate(template.config)}
-                className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 font-medium shadow-lg transition text-sm"
+                className="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 font-medium shadow-lg transition text-sm"
               >
                 Use Template
               </button>
             </div>
             
             {key === 'divergingBar' && (
-              <div className="mt-3 p-3 bg-purple-900/30 rounded-lg">
+              <div className="mt-3 p-3 bg-amber-800/30 rounded-lg">
                 <div className="text-xs text-purple-200 space-y-1">
                   <div><strong>Perfect for:</strong> Risk vs Resiliency, Before vs After, Positive vs Negative data</div>
                   <div><strong>Features:</strong> Horizontal bars, negative/positive values, center-aligned axis</div>
@@ -36,7 +36,7 @@ const TemplatesTab = ({ onApplyTemplate }) => {
         ))}
       </div>
       
-      <div className="bg-purple-900/30 p-4 rounded-lg">
+      <div className="bg-amber-800/30 p-4 rounded-lg">
         <h4 className="text-white font-medium mb-2">💡 Template Tips</h4>
         <ul className="text-xs text-purple-200 space-y-1">
           <li>• Templates provide a starting point - customize them in other tabs</li>

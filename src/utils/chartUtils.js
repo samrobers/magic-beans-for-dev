@@ -1,36 +1,57 @@
 // Chart generation utilities
+import { DATASET_COLORS } from './constants';
 
 export const generateChartJSConfig = (config) => {
   const datasetsWithBg = [];
   
-  config.datasets.forEach(ds => {
-    if (ds.backgroundFill) {
+  // Handle pie/doughnut charts differently
+  if (config.type === 'pie' || config.type === 'doughnut') {
+    config.datasets.forEach(ds => {
       datasetsWithBg.push({
-        label: `${ds.name} (Background)`,
-        data: Array(config.labels.length).fill(ds.backgroundFillMax),
-        backgroundColor: ds.backgroundFillColor,
-        borderColor: ds.backgroundFillColor,
-        borderWidth: 0,
-        order: 2,
-        barPercentage: 1.0,
-        categoryPercentage: 1.0
+        label: ds.name,
+        data: ds.data,
+        backgroundColor: ds.backgroundColor || DATASET_COLORS.slice(0, ds.data.length),
+        borderColor: ds.color,
+        borderWidth: ds.borderWidth || 2
       });
-    }
-    
-    datasetsWithBg.push({
-      label: ds.name,
-      data: ds.data,
-      backgroundColor: ds.color + (config.type === 'line' ? '00' : 'CC'),
-      borderColor: ds.color,
-      borderWidth: ds.borderWidth,
-      order: 1,
-      fill: config.type === 'line' ? false : undefined,
-      tension: config.type === 'line' ? 0.1 : undefined
     });
-  });
+  } else {
+    // Handle bar/line charts - use grouped: false for true overlap
+    config.datasets.forEach(ds => {
+      if (ds.backgroundFill) {
+        datasetsWithBg.push({
+          type: 'bar',
+          label: `${ds.name} (Max Range)`,
+          data: Array(config.labels.length).fill(ds.backgroundFillMax),
+          backgroundColor: ds.backgroundFillColor + '50',
+          borderColor: ds.backgroundFillColor,
+          borderWidth: 1,
+          order: 10, // Render behind other bars
+          barPercentage: 1.0, // Full width
+          categoryPercentage: 0.8,
+          grouped: false // Don't group - allows overlap
+        });
+      }
+      
+      datasetsWithBg.push({
+        type: config.type === 'line' ? 'line' : 'bar',
+        label: ds.name,
+        data: ds.data,
+        backgroundColor: ds.color + (config.type === 'line' ? '00' : 'CC'),
+        borderColor: ds.color,
+        borderWidth: ds.borderWidth,
+        order: ds.backgroundFill ? 1 : 5, // Render in front if has background
+        barPercentage: ds.backgroundFill ? 0.8 : 1.0, // Narrower if has background
+        categoryPercentage: 0.8,
+        grouped: ds.backgroundFill ? false : undefined, // Don't group if has background
+        fill: config.type === 'line' ? false : undefined,
+        tension: config.type === 'line' ? 0.1 : undefined
+      });
+    });
+  }
 
   // Updated chart type for Chart.js v3+
-  const chartType = config.type === 'line' ? 'line' : 'bar';
+  const chartType = config.type;
 
   const chartConfig = {
     type: chartType,
@@ -41,7 +62,9 @@ export const generateChartJSConfig = (config) => {
     options: {
       responsive: true,
       maintainAspectRatio: true,
-      indexAxis: config.orientation === 'horizontal' && config.type === 'bar' ? 'y' : 'x',
+      ...(config.type !== 'pie' && config.type !== 'doughnut' && {
+        indexAxis: config.orientation === 'horizontal' && config.type === 'bar' ? 'y' : 'x'
+      }),
       animation: config.animations?.enabled ? {
         duration: config.animations.duration || 1000,
         easing: config.animations.easing || 'easeInOutQuart'
@@ -70,19 +93,24 @@ export const generateChartJSConfig = (config) => {
         intersect: config.interaction?.intersect || false
       },
       elements: config.elements || {},
-      scales: {}
+      ...(config.type !== 'pie' && config.type !== 'doughnut' && { scales: {} })
     }
   };
 
-  // Configure scales for Chart.js v3+ syntax
-  if (config.orientation === 'horizontal' && config.type === 'bar') {
+  // Configure scales for Chart.js v3+ syntax (only for bar/line charts)
+  // Disable stacking if any dataset has background fill (for proper overlapping)
+  const hasBackgroundFill = config.datasets.some(ds => ds.backgroundFill);
+  const useStacking = config.stacked && !hasBackgroundFill;
+  
+  if (config.type !== 'pie' && config.type !== 'doughnut') {
+    if (config.orientation === 'horizontal' && config.type === 'bar') {
     chartConfig.options.scales.x = {
       type: 'linear',
       display: config.xAxis.display,
       grid: { display: config.showGrid },
       beginAtZero: config.xAxis.beginAtZero,
       reverse: config.xAxis.reverse,
-      stacked: config.stacked,
+      stacked: useStacking,
       // Add center line for diverging charts
       ...(config.diverging && {
         grid: {
@@ -102,15 +130,17 @@ export const generateChartJSConfig = (config) => {
     chartConfig.options.scales.y = {
       type: 'category',
       display: config.yAxis.display,
-      stacked: config.stacked,
-      grid: { display: false }
+      stacked: useStacking,
+      grid: { display: false },
+      reverse: config.yAxis.reverse
     };
   } else {
     chartConfig.options.scales.x = {
       type: config.type === 'line' ? 'category' : 'category',
       display: config.xAxis.display,
       grid: { display: config.showGrid },
-      stacked: config.stacked
+      stacked: useStacking,
+      reverse: config.xAxis.reverse
     };
     
     chartConfig.options.scales.y = {
@@ -130,10 +160,11 @@ export const generateChartJSConfig = (config) => {
       },
       beginAtZero: config.yAxis.beginAtZero,
       reverse: config.yAxis.reverse,
-      stacked: config.stacked
+      stacked: useStacking
     };
     if (config.yAxis.min !== '') chartConfig.options.scales.y.min = parseFloat(config.yAxis.min);
     if (config.yAxis.max !== '') chartConfig.options.scales.y.max = parseFloat(config.yAxis.max);
+  }
   }
 
   return JSON.stringify(chartConfig, null, 2);

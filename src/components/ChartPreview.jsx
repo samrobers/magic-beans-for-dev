@@ -27,9 +27,9 @@ const ChartPreview = ({ config, chartData }) => {
   const legendProps = getRechartsLegendProps();
 
   return (
-    <div className="bg-white/10 backdrop-blur-sm rounded-lg shadow-xl p-6 border border-white/20">
-      <h2 className="text-xl font-bold text-white mb-4">👁️ Live Preview</h2>
-      <div className="text-xs text-purple-200 mb-2 bg-purple-900/30 p-2 rounded">
+    <div className="bg-amber-900/20 backdrop-blur-sm rounded-lg shadow-xl p-6 border border-amber-600/30">
+      <h2 className="text-xl font-bold text-amber-100 mb-4">🔍 Scout's View</h2>
+      <div className="text-xs text-amber-200 mb-2 bg-amber-900/30 p-2 rounded">
         💡 Preview uses Recharts for display. Legend positioning and some features may differ from the actual Chart.js output.
         {config.diverging && <span className="block mt-1"><strong>Diverging mode:</strong> Center line and negative value handling optimized for Chart.js.</span>}
       </div>

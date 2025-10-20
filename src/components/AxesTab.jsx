@@ -2,8 +2,8 @@ import React from 'react';
 
 const AxesTab = ({ config, updateNestedConfig }) => {
   return (
-    <div className="bg-white/10 backdrop-blur-sm rounded-lg shadow-xl p-6 space-y-4 border border-white/20 max-h-[600px] overflow-y-auto">
-      <h2 className="text-2xl font-bold text-white">📏 Axes Configuration</h2>
+    <div className="bg-amber-900/20 backdrop-blur-sm rounded-lg shadow-xl p-6 space-y-4 border border-amber-600/30 max-h-[600px] overflow-y-auto">
+      <h2 className="text-2xl font-bold text-white">🧭 Surveyor's Compass</h2>
       
       {['xAxis', 'yAxis'].map(axis => (
         <div key={axis} className="bg-white/5 p-4 rounded-lg">
