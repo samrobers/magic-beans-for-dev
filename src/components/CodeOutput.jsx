@@ -7,12 +7,12 @@ const CodeOutput = ({ config, generateChartJSConfig, copyToClipboard }) => {
   };
 
   return (
-    <div className="bg-white/10 backdrop-blur-sm rounded-lg shadow-xl p-6 border border-white/20">
+    <div className="bg-amber-900/20 backdrop-blur-sm rounded-lg shadow-xl p-6 border border-amber-600/30">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold text-white">📋 Chart.js Config</h2>
+        <h2 className="text-xl font-bold text-amber-100">📋 Chart.js Config</h2>
         <button
           onClick={handleCopy}
-          className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 font-medium shadow-lg transition"
+          className="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 font-medium shadow-lg transition"
         >
           📋 Copy Code
         </button>
