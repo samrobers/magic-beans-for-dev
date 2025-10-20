@@ -4,10 +4,12 @@ import { generateChartJSConfig, buildChartData, copyToClipboard } from '../utils
 import { TABS } from '../utils/constants';
 
 import TabNavigation from './TabNavigation';
+import TemplatesTab from './TemplatesTab';
 import BasicSettingsTab from './BasicSettingsTab';
 import AxesTab from './AxesTab';
 import DataTab from './DataTab';
 import AdvancedTab from './AdvancedTab';
+import AnimationsTab from './AnimationsTab';
 import ChartPreview from './ChartPreview';
 import CodeOutput from './CodeOutput';
 
@@ -22,16 +24,19 @@ const ChartJSBuilder = () => {
     addDataset,
     removeDataset,
     updateDatasetProp,
-    updateDataValue
+    updateDataValue,
+    applyTemplate
   } = useChartConfig();
 
-  const [activeTab, setActiveTab] = useState('basic');
+  const [activeTab, setActiveTab] = useState('templates');
 
   // Build chart data for preview
   const chartData = buildChartData(config);
 
   const renderTabContent = () => {
     switch (activeTab) {
+      case 'templates':
+        return <TemplatesTab onApplyTemplate={applyTemplate} />;
       case 'basic':
         return <BasicSettingsTab config={config} updateConfig={updateConfig} />;
       case 'axes':
@@ -51,6 +56,8 @@ const ChartJSBuilder = () => {
         );
       case 'advanced':
         return <AdvancedTab config={config} updateDatasetProp={updateDatasetProp} />;
+      case 'animations':
+        return <AnimationsTab config={config} updateConfig={updateConfig} updateNestedConfig={updateNestedConfig} />;
       default:
         return null;
     }

@@ -74,6 +74,18 @@ const DataTab = ({
                   className="w-12 h-10 rounded-lg cursor-pointer"
                   title="Dataset color"
                 />
+                {config.diverging && (
+                  <button
+                    onClick={() => {
+                      const newData = ds.data.map(val => -Math.abs(val));
+                      updateDatasetProp(i, 'data', newData);
+                    }}
+                    className="px-2 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 text-xs font-medium"
+                    title="Convert to negative values for diverging chart"
+                  >
+                    ±
+                  </button>
+                )}
                 <button
                   onClick={() => removeDataset(i)}
                   disabled={config.datasets.length === 1}

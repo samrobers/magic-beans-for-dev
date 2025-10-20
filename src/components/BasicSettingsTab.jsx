@@ -75,7 +75,8 @@ const BasicSettingsTab = ({ config, updateConfig }) => {
         {[
           { key: 'showLegend', label: 'Show Legend' },
           { key: 'showGrid', label: 'Show Grid' },
-          { key: 'stacked', label: 'Stacked' }
+          { key: 'stacked', label: 'Stacked' },
+          { key: 'diverging', label: 'Diverging (Center-aligned)' }
         ].map(({ key, label }) => (
           <label key={key} className="flex items-center gap-2 cursor-pointer bg-white/5 p-2 rounded">
             <input
@@ -88,6 +89,14 @@ const BasicSettingsTab = ({ config, updateConfig }) => {
           </label>
         ))}
       </div>
+
+      {config.diverging && (
+        <div className="bg-purple-900/30 p-3 rounded-lg">
+          <div className="text-xs text-purple-200">
+            💡 <strong>Diverging Mode:</strong> Perfect for charts with positive and negative values that extend from a center axis (like Risk vs Resiliency). Use negative values for one dataset and positive for the other.
+          </div>
+        </div>
+      )}
     </div>
   );
 };

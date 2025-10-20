@@ -73,6 +73,10 @@ export const useChartConfig = () => {
     updateConfig('datasets', newDatasets);
   };
 
+  const applyTemplate = (templateConfig) => {
+    setConfig(templateConfig);
+  };
+
   return {
     config,
     updateConfig,
@@ -83,6 +87,7 @@ export const useChartConfig = () => {
     addDataset,
     removeDataset,
     updateDatasetProp,
-    updateDataValue
+    updateDataValue,
+    applyTemplate
   };
 };
