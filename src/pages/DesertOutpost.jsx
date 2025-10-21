@@ -42,9 +42,8 @@ const DesertOutpost = () => {
 
   const handleBuildingClick = (building) => {
     if (building.status === 'open' || building.status === 'coming-soon') {
-      // Handle GitHub Pages base path
-      const basePath = window.location.pathname.includes('/magic-beans-for-dev') ? '/magic-beans-for-dev' : '';
-      window.location.href = basePath + building.path;
+      // Simple navigation - Vite handles the base path
+      window.location.href = building.path;
     }
   };
 
