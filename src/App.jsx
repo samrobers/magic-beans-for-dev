@@ -6,12 +6,16 @@ import ComingSoon from './pages/coming-soon/ComingSoon';
 const App = () => {
   // Simple routing based on pathname
   const path = window.location.pathname;
+  const basePath = '/magic-beans-for-dev';
   
-  if (path === '/chart-saloon' || path === '/chart-saloon/') {
+  // Remove base path for comparison
+  const routePath = path.startsWith(basePath) ? path.substring(basePath.length) : path;
+  
+  if (routePath === '/chart-saloon' || routePath === '/chart-saloon/') {
     return <ChartSaloon />;
   }
   
-  if (path === '/data-casino' || path === '/data-casino/') {
+  if (routePath === '/data-casino' || routePath === '/data-casino/') {
     return (
       <ComingSoon 
         buildingName="Data Casino"
@@ -21,7 +25,7 @@ const App = () => {
     );
   }
   
-  if (path === '/trading-post' || path === '/trading-post/') {
+  if (routePath === '/trading-post' || routePath === '/trading-post/') {
     return (
       <ComingSoon 
         buildingName="Trading Post"
@@ -31,7 +35,7 @@ const App = () => {
     );
   }
   
-  if (path === '/sheriffs-office' || path === '/sheriffs-office/') {
+  if (routePath === '/sheriffs-office' || routePath === '/sheriffs-office/') {
     return (
       <ComingSoon 
         buildingName="Sheriff's Office"
