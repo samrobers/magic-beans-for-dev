@@ -2,9 +2,9 @@ name: Deploy Rango's Desert Outpost to GitHub Pages
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: [ "main", "feat.base_chartjs_editor_migrated" ]
   pull_request:
-    branches: [ "main", "master" ]
+    branches: [ "main", "feat.base_chartjs_editor_migrated" ]
 
 permissions:
   contents: read
