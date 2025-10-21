@@ -1,0 +1,658 @@
+import React, { useState } from 'react';
+import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
+export default function ChartJSBuilder() {
+  const [config, setConfig] = useState({
+    type: 'bar',
+    orientation: 'vertical',
+    title: 'My Chart',
+    showLegend: true,
+    showGrid: true,
+    legendPosition: 'top',
+    stacked: false,
+    labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4'],
+    datasets: [
+      { 
+        name: 'Dataset 1', 
+        data: [65, 59, 80, 81], 
+        color: '#3b82f6', 
+        borderWidth: 2,
+        backgroundFill: false,
+        backgroundFillColor: '#dbeafe',
+        backgroundFillMax: 100
+      }
+    ],
+    xAxis: { display: true, min: '', max: '', reverse: false, beginAtZero: true },
+    yAxis: { display: true, min: '', max: '', reverse: false, beginAtZero: true }
+  });
+
+  const [activeTab, setActiveTab] = useState('basic');
+
+  const updateConfig = (key, value) => {
+    setConfig(prev => ({ ...prev, [key]: value }));
+  };
+
+  const updateNestedConfig = (parent, key, value) => {
+    setConfig(prev => ({
+      ...prev,
+      [parent]: { ...prev[parent], [key]: value }
+    }));
+  };
+
+  const addLabel = () => {
+    const newLabels = [...config.labels, `Label ${config.labels.length + 1}`];
+    const newDatasets = config.datasets.map(ds => ({
+      ...ds,
+      data: [...ds.data, 0]
+    }));
+    setConfig(prev => ({ ...prev, labels: newLabels, datasets: newDatasets }));
+  };
+
+  const removeLabel = (index) => {
+    if (config.labels.length > 1) {
+      const newLabels = config.labels.filter((_, i) => i !== index);
+      const newDatasets = config.datasets.map(ds => ({
+        ...ds,
+        data: ds.data.filter((_, i) => i !== index)
+      }));
+      setConfig(prev => ({ ...prev, labels: newLabels, datasets: newDatasets }));
+    }
+  };
+
+  const updateLabel = (index, value) => {
+    const newLabels = [...config.labels];
+    newLabels[index] = value;
+    updateConfig('labels', newLabels);
+  };
+
+  const addDataset = () => {
+    const colors = ['#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#14b8a6', '#f43f5e'];
+    const bgColors = ['#d1fae5', '#fef3c7', '#ede9fe', '#fce7f3', '#ccfbf1', '#fecdd3'];
+    const newDataset = {
+      name: `Dataset ${config.datasets.length + 1}`,
+      data: Array(config.labels.length).fill(50),
+      color: colors[config.datasets.length % colors.length],
+      borderWidth: 2,
+      backgroundFill: false,
+      backgroundFillColor: bgColors[config.datasets.length % bgColors.length],
+      backgroundFillMax: 100
+    };
+    updateConfig('datasets', [...config.datasets, newDataset]);
+  };
+
+  const removeDataset = (index) => {
+    if (config.datasets.length > 1) {
+      updateConfig('datasets', config.datasets.filter((_, i) => i !== index));
+    }
+  };
+
+  const updateDatasetProp = (index, prop, value) => {
+    const newDatasets = [...config.datasets];
+    newDatasets[index] = { ...newDatasets[index], [prop]: value };
+    updateConfig('datasets', newDatasets);
+  };
+
+  const updateDataValue = (datasetIndex, valueIndex, value) => {
+    const newDatasets = [...config.datasets];
+    const numValue = value === '' ? 0 : parseFloat(value);
+    newDatasets[datasetIndex].data[valueIndex] = isNaN(numValue) ? 0 : numValue;
+    updateConfig('datasets', newDatasets);
+  };
+
+  // Build chart data for preview
+  const chartData = config.labels.map((label, i) => {
+    const point = { name: label };
+    config.datasets.forEach(ds => {
+      point[ds.name] = ds.data[i] || 0;
+      if (ds.backgroundFill) {
+        point[`${ds.name}_bg`] = ds.backgroundFillMax;
+      }
+    });
+    return point;
+  });
+
+  const generateChartJSConfig = () => {
+    const datasetsWithBg = [];
+    
+    config.datasets.forEach(ds => {
+      if (ds.backgroundFill) {
+        datasetsWithBg.push({
+          label: `${ds.name} (Max)`,
+          data: Array(config.labels.length).fill(ds.backgroundFillMax),
+          backgroundColor: ds.backgroundFillColor,
+          borderColor: ds.backgroundFillColor,
+          borderWidth: 0,
+          order: 2
+        });
+      }
+      
+      datasetsWithBg.push({
+        label: ds.name,
+        data: ds.data,
+        backgroundColor: ds.color + 'CC',
+        borderColor: ds.color,
+        borderWidth: ds.borderWidth,
+        order: 1
+      });
+    });
+
+    const chartConfig = {
+      type: config.type === 'line' ? 'line' : (config.orientation === 'horizontal' ? 'horizontalBar' : 'bar'),
+      data: {
+        labels: config.labels,
+        datasets: datasetsWithBg
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          title: {
+            display: true,
+            text: config.title,
+            font: { size: 20 }
+          },
+          legend: {
+            display: config.showLegend,
+            position: config.legendPosition
+          }
+        },
+        scales: {}
+      }
+    };
+
+    if (config.orientation === 'horizontal' && config.type === 'bar') {
+      chartConfig.options.scales.xAxes = [{
+        display: config.xAxis.display,
+        grid: { display: config.showGrid },
+        ticks: {
+          reverse: config.xAxis.reverse,
+          beginAtZero: config.xAxis.beginAtZero
+        }
+      }];
+      if (config.xAxis.min !== '') chartConfig.options.scales.xAxes[0].ticks.min = parseFloat(config.xAxis.min);
+      if (config.xAxis.max !== '') chartConfig.options.scales.xAxes[0].ticks.max = parseFloat(config.xAxis.max);
+      
+      chartConfig.options.scales.yAxes = [{
+        display: config.yAxis.display,
+        stacked: config.stacked,
+        grid: { display: false }
+      }];
+    } else {
+      chartConfig.options.scales.x = {
+        display: config.xAxis.display,
+        grid: { display: config.showGrid },
+        stacked: config.stacked
+      };
+      
+      chartConfig.options.scales.y = {
+        display: config.yAxis.display,
+        grid: { display: config.showGrid },
+        beginAtZero: config.yAxis.beginAtZero,
+        reverse: config.yAxis.reverse,
+        stacked: config.stacked
+      };
+      if (config.yAxis.min !== '') chartConfig.options.scales.y.min = parseFloat(config.yAxis.min);
+      if (config.yAxis.max !== '') chartConfig.options.scales.y.max = parseFloat(config.yAxis.max);
+    }
+
+    return JSON.stringify(chartConfig, null, 2);
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(generateChartJSConfig());
+    alert('✅ Chart.js configuration copied to clipboard!');
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-6">
+          <h1 className="text-5xl font-bold text-white mb-2">📊 Chart.js Builder</h1>
+          <p className="text-purple-200">Visual configuration tool for Chart.js</p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Left Panel - Controls */}
+          <div className="space-y-4">
+            {/* Tabs */}
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg shadow-xl p-2 border border-white/20">
+              <div className="grid grid-cols-4 gap-2">
+                {['basic', 'axes', 'data', 'advanced'].map(tab => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`px-3 py-2 rounded-lg font-medium transition text-sm ${
+                      activeTab === tab 
+                        ? 'bg-purple-500 text-white shadow-lg' 
+                        : 'bg-white/5 text-white hover:bg-white/10'
+                    }`}
+                  >
+                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Basic Tab */}
+            {activeTab === 'basic' && (
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg shadow-xl p-6 space-y-4 border border-white/20">
+                <h2 className="text-2xl font-bold text-white">⚙️ Basic Settings</h2>
+                
+                <div>
+                  <label className="block text-sm font-medium text-purple-200 mb-2">Chart Type</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {['bar', 'line'].map(type => (
+                      <button
+                        key={type}
+                        onClick={() => updateConfig('type', type)}
+                        className={`px-4 py-2 rounded-lg font-medium transition ${
+                          config.type === type 
+                            ? 'bg-purple-500 text-white shadow-lg' 
+                            : 'bg-white/10 text-white hover:bg-white/20'
+                        }`}
+                      >
+                        {type.charAt(0).toUpperCase() + type.slice(1)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {config.type === 'bar' && (
+                  <div>
+                    <label className="block text-sm font-medium text-purple-200 mb-2">Orientation</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {['vertical', 'horizontal'].map(orient => (
+                        <button
+                          key={orient}
+                          onClick={() => updateConfig('orientation', orient)}
+                          className={`px-4 py-2 rounded-lg font-medium transition ${
+                            config.orientation === orient 
+                              ? 'bg-purple-500 text-white shadow-lg' 
+                              : 'bg-white/10 text-white hover:bg-white/20'
+                          }`}
+                        >
+                          {orient === 'vertical' ? '↕ Vertical' : '↔ Horizontal'}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-sm font-medium text-purple-200 mb-2">Chart Title</label>
+                  <input
+                    type="text"
+                    value={config.title}
+                    onChange={(e) => updateConfig('title', e.target.value)}
+                    className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-purple-500 text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-purple-200 mb-2">Legend Position</label>
+                  <select
+                    value={config.legendPosition}
+                    onChange={(e) => updateConfig('legendPosition', e.target.value)}
+                    className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white"
+                  >
+                    <option value="top">Top</option>
+                    <option value="bottom">Bottom</option>
+                    <option value="left">Left</option>
+                    <option value="right">Right</option>
+                  </select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { key: 'showLegend', label: 'Show Legend' },
+                    { key: 'showGrid', label: 'Show Grid' },
+                    { key: 'stacked', label: 'Stacked' }
+                  ].map(({ key, label }) => (
+                    <label key={key} className="flex items-center gap-2 cursor-pointer bg-white/5 p-2 rounded">
+                      <input
+                        type="checkbox"
+                        checked={config[key]}
+                        onChange={(e) => updateConfig(key, e.target.checked)}
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm font-medium text-white">{label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Axes Tab */}
+            {activeTab === 'axes' && (
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg shadow-xl p-6 space-y-4 border border-white/20 max-h-[600px] overflow-y-auto">
+                <h2 className="text-2xl font-bold text-white">📏 Axes Configuration</h2>
+                
+                {['xAxis', 'yAxis'].map(axis => (
+                  <div key={axis} className="bg-white/5 p-4 rounded-lg">
+                    <h3 className="font-semibold text-purple-200 mb-3">
+                      {axis === 'xAxis' ? 'X-Axis' : 'Y-Axis'}
+                    </h3>
+                    <div className="space-y-3">
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={config[axis].display}
+                          onChange={(e) => updateNestedConfig(axis, 'display', e.target.checked)}
+                          className="w-4 h-4"
+                        />
+                        <span className="text-sm font-medium text-white">Display Axis</span>
+                      </label>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="block text-xs text-purple-200 mb-1">Min Value</label>
+                          <input
+                            type="number"
+                            value={config[axis].min}
+                            onChange={(e) => updateNestedConfig(axis, 'min', e.target.value)}
+                            placeholder="Auto"
+                            className="w-full px-2 py-1 bg-white/10 border border-white/20 rounded text-sm text-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-purple-200 mb-1">Max Value</label>
+                          <input
+                            type="number"
+                            value={config[axis].max}
+                            onChange={(e) => updateNestedConfig(axis, 'max', e.target.value)}
+                            placeholder="Auto"
+                            className="w-full px-2 py-1 bg-white/10 border border-white/20 rounded text-sm text-white"
+                          />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <label className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            checked={config[axis].reverse}
+                            onChange={(e) => updateNestedConfig(axis, 'reverse', e.target.checked)}
+                            className="w-4 h-4"
+                          />
+                          <span className="text-xs font-medium text-white">Reverse</span>
+                        </label>
+                        <label className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            checked={config[axis].beginAtZero}
+                            onChange={(e) => updateNestedConfig(axis, 'beginAtZero', e.target.checked)}
+                            className="w-4 h-4"
+                          />
+                          <span className="text-xs font-medium text-white">Begin at Zero</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Data Tab */}
+            {activeTab === 'data' && (
+              <div className="space-y-4 max-h-[600px] overflow-y-auto">
+                {/* Labels */}
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg shadow-xl p-6 border border-white/20">
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-bold text-white">🏷️ Labels</h2>
+                    <button
+                      onClick={addLabel}
+                      className="px-3 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600 text-sm font-medium shadow"
+                    >
+                      + Add
+                    </button>
+                  </div>
+                  <div className="space-y-2">
+                    {config.labels.map((label, i) => (
+                      <div key={i} className="flex gap-2">
+                        <input
+                          type="text"
+                          value={label}
+                          onChange={(e) => updateLabel(i, e.target.value)}
+                          className="flex-1 px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-sm text-white"
+                          placeholder={`Label ${i + 1}`}
+                        />
+                        <button
+                          onClick={() => removeLabel(i)}
+                          disabled={config.labels.length === 1}
+                          className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Datasets */}
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg shadow-xl p-6 border border-white/20">
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-bold text-white">📊 Datasets</h2>
+                    <button
+                      onClick={addDataset}
+                      className="px-3 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600 text-sm font-medium shadow"
+                    >
+                      + Add
+                    </button>
+                  </div>
+                  <div className="space-y-4">
+                    {config.datasets.map((ds, i) => (
+                      <div key={i} className="bg-white/5 border border-white/10 rounded-lg p-4">
+                        <div className="flex gap-2 mb-3">
+                          <input
+                            type="text"
+                            value={ds.name}
+                            onChange={(e) => updateDatasetProp(i, 'name', e.target.value)}
+                            className="flex-1 px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-sm text-white"
+                            placeholder="Dataset name"
+                          />
+                          <input
+                            type="color"
+                            value={ds.color}
+                            onChange={(e) => updateDatasetProp(i, 'color', e.target.value)}
+                            className="w-12 h-10 rounded-lg cursor-pointer"
+                            title="Dataset color"
+                          />
+                          <button
+                            onClick={() => removeDataset(i)}
+                            disabled={config.datasets.length === 1}
+                            className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            ×
+                          </button>
+                        </div>
+                        <div className="text-xs text-purple-200 mb-2 font-medium">Values:</div>
+                        <div className="grid grid-cols-4 gap-2">
+                          {ds.data.map((val, j) => (
+                            <input
+                              key={j}
+                              type="number"
+                              value={val}
+                              onChange={(e) => updateDataValue(i, j, e.target.value)}
+                              className="px-2 py-1 bg-white/10 border border-white/20 rounded text-sm text-white"
+                              title={config.labels[j]}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Advanced Tab */}
+            {activeTab === 'advanced' && (
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg shadow-xl p-6 space-y-4 border border-white/20 max-h-[600px] overflow-y-auto">
+                <h2 className="text-2xl font-bold text-white">🎨 Advanced Styling</h2>
+                
+                {config.datasets.map((ds, i) => (
+                  <div key={i} className="bg-white/5 border border-white/10 rounded-lg p-4">
+                    <h3 className="font-semibold text-white mb-3">{ds.name}</h3>
+                    
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs text-purple-200 mb-1">
+                          Border Width: {ds.borderWidth}px
+                        </label>
+                        <input
+                          type="range"
+                          min="0"
+                          max="10"
+                          value={ds.borderWidth}
+                          onChange={(e) => updateDatasetProp(i, 'borderWidth', parseInt(e.target.value))}
+                          className="w-full"
+                        />
+                      </div>
+
+                      <div className="bg-white/5 p-3 rounded-lg">
+                        <label className="flex items-center gap-2 cursor-pointer mb-3">
+                          <input
+                            type="checkbox"
+                            checked={ds.backgroundFill}
+                            onChange={(e) => updateDatasetProp(i, 'backgroundFill', e.target.checked)}
+                            className="w-4 h-4"
+                          />
+                          <span className="text-sm font-medium text-white">Enable Background Fill</span>
+                        </label>
+                        
+                        {ds.backgroundFill && (
+                          <div className="space-y-3 pl-4 border-l-2 border-purple-500">
+                            <div>
+                              <label className="block text-xs text-purple-200 mb-1">Background Color</label>
+                              <div className="flex gap-2">
+                                <input
+                                  type="color"
+                                  value={ds.backgroundFillColor}
+                                  onChange={(e) => updateDatasetProp(i, 'backgroundFillColor', e.target.value)}
+                                  className="w-10 h-8 rounded cursor-pointer"
+                                />
+                                <input
+                                  type="text"
+                                  value={ds.backgroundFillColor}
+                                  onChange={(e) => updateDatasetProp(i, 'backgroundFillColor', e.target.value)}
+                                  className="flex-1 px-2 py-1 bg-white/10 border border-white/20 rounded text-xs text-white font-mono"
+                                />
+                              </div>
+                            </div>
+                            <div>
+                              <label className="block text-xs text-purple-200 mb-1">Max Value (100% bar width)</label>
+                              <input
+                                type="number"
+                                value={ds.backgroundFillMax}
+                                onChange={(e) => updateDatasetProp(i, 'backgroundFillMax', parseFloat(e.target.value) || 100)}
+                                className="w-full px-2 py-1 bg-white/10 border border-white/20 rounded text-sm text-white"
+                              />
+                            </div>
+                            <div className="text-xs text-purple-200 bg-purple-900/30 p-2 rounded">
+                              💡 Shows the remaining space from your value to max (great for progress bars!)
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Right Panel - Preview & Code */}
+          <div className="space-y-4">
+            {/* Preview */}
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg shadow-xl p-6 border border-white/20">
+              <h2 className="text-xl font-bold text-white mb-4">👁️ Live Preview</h2>
+              <div className="bg-white rounded-lg p-4">
+                <ResponsiveContainer width="100%" height={350}>
+                  {config.type === 'line' ? (
+                    <LineChart data={chartData}>
+                      {config.showGrid && <CartesianGrid strokeDasharray="3 3" />}
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <Tooltip />
+                      {config.showLegend && <Legend />}
+                      {config.datasets.map((ds, idx) => (
+                        <Line 
+                          key={idx} 
+                          type="monotone" 
+                          dataKey={ds.name} 
+                          stroke={ds.color} 
+                          strokeWidth={ds.borderWidth} 
+                        />
+                      ))}
+                    </LineChart>
+                  ) : (
+                    <BarChart 
+                      data={chartData} 
+                      layout={config.orientation === 'horizontal' ? 'vertical' : 'horizontal'}
+                    >
+                      {config.showGrid && <CartesianGrid strokeDasharray="3 3" />}
+                      {config.orientation === 'horizontal' ? (
+                        <>
+                          <XAxis 
+                            type="number" 
+                            domain={[
+                              config.xAxis.min !== '' ? parseFloat(config.xAxis.min) : 'auto',
+                              config.xAxis.max !== '' ? parseFloat(config.xAxis.max) : 'auto'
+                            ]} 
+                          />
+                          <YAxis type="category" dataKey="name" width={100} />
+                        </>
+                      ) : (
+                        <>
+                          <XAxis dataKey="name" />
+                          <YAxis 
+                            domain={[
+                              config.yAxis.min !== '' ? parseFloat(config.yAxis.min) : 'auto',
+                              config.yAxis.max !== '' ? parseFloat(config.yAxis.max) : 'auto'
+                            ]} 
+                          />
+                        </>
+                      )}
+                      <Tooltip />
+                      {config.showLegend && <Legend />}
+                      {config.datasets.map((ds, idx) => (
+                        <React.Fragment key={idx}>
+                          {ds.backgroundFill && (
+                            <Bar 
+                              dataKey={`${ds.name}_bg`} 
+                              fill={ds.backgroundFillColor} 
+                              stackId={config.stacked ? 'a' : `bg${idx}`}
+                            />
+                          )}
+                          <Bar 
+                            dataKey={ds.name} 
+                            fill={ds.color}
+                            stackId={config.stacked ? 'a' : `main${idx}`}
+                          />
+                        </React.Fragment>
+                      ))}
+                    </BarChart>
+                  )}
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Generated Code */}
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg shadow-xl p-6 border border-white/20">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold text-white">📋 Chart.js Config</h2>
+                <button
+                  onClick={copyToClipboard}
+                  className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 font-medium shadow-lg transition"
+                >
+                  📋 Copy Code
+                </button>
+              </div>
+              <pre className="bg-slate-900 text-green-400 p-4 rounded-lg overflow-x-auto text-xs max-h-96 overflow-y-auto font-mono">
+                {generateChartJSConfig()}
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
