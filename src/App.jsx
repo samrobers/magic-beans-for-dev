@@ -7,13 +7,15 @@ const App = () => {
   // Simple routing based on pathname
   const path = window.location.pathname;
   
-  // For GitHub Pages, Vite handles the base path automatically
-  // We just need to check the routes relative to the base
-  if (path.endsWith('/chart-saloon') || path.endsWith('/chart-saloon/')) {
+  // Clean path for easier matching (remove trailing slashes)
+  const cleanPath = path.replace(/\/$/, '');
+  
+  // Check for chart-saloon route
+  if (cleanPath.includes('/chart-saloon')) {
     return <ChartSaloon />;
   }
   
-  if (path.endsWith('/data-casino') || path.endsWith('/data-casino/')) {
+  if (cleanPath.includes('/data-casino')) {
     return (
       <ComingSoon 
         buildingName="Data Casino"
@@ -23,7 +25,7 @@ const App = () => {
     );
   }
   
-  if (path.endsWith('/trading-post') || path.endsWith('/trading-post/')) {
+  if (cleanPath.includes('/trading-post')) {
     return (
       <ComingSoon 
         buildingName="Trading Post"
@@ -33,7 +35,7 @@ const App = () => {
     );
   }
   
-  if (path.endsWith('/sheriffs-office') || path.endsWith('/sheriffs-office/')) {
+  if (cleanPath.includes('/sheriffs-office')) {
     return (
       <ComingSoon 
         buildingName="Sheriff's Office"
