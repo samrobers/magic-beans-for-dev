@@ -1,6 +1,6 @@
 import React from 'react';
 import DesertOutpost from './pages/DesertOutpost';
-import ChartSaloon from './pages/chart-saloon/ChartSaloon';
+import ChartSaloonApp from './apps/chart-saloon/index.jsx';
 import ComingSoon from './pages/coming-soon/ComingSoon';
 
 const App = () => {
@@ -12,15 +12,15 @@ const App = () => {
   
   // Check for chart-saloon route
   if (cleanPath.includes('/chart-saloon')) {
-    return <ChartSaloon />;
+    return <ChartSaloonApp />;
   }
   
-  if (cleanPath.includes('/data-casino')) {
+  if (cleanPath.includes('/ditch-rider-academy')) {
     return (
       <ComingSoon 
-        buildingName="Data Casino"
-        buildingIcon="🎰"
-        description="Roll the dice on insights - Analytics and statistical tools"
+        buildingName="Ditch Rider Academy"
+        buildingIcon="�"
+        description="Master Angular pipes and data flow - Channel data through the digital frontier"
       />
     );
   }
