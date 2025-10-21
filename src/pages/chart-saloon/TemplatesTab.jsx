@@ -26,7 +26,7 @@ const TemplatesTab = ({ onApplyTemplate }) => {
             {key === 'divergingBar' && (
               <div className="mt-3 p-3 bg-amber-800/30 rounded-lg">
                 <div className="text-xs text-purple-200 space-y-1">
-                  <div><strong>Perfect for:</strong> Risk vs Resiliency, Before vs After, Positive vs Negative data</div>
+                  <div><strong>Perfect for:</strong> Performance vs Targets, Before vs After, Positive vs Negative data</div>
                   <div><strong>Features:</strong> Horizontal bars, negative/positive values, center-aligned axis</div>
                   <div><strong>Use case:</strong> Comparing opposing forces or complementary metrics</div>
                 </div>
