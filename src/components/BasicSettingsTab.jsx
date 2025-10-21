@@ -137,7 +137,7 @@ const BasicSettingsTab = ({ config, updateConfig }) => {
       {config.diverging && (
         <div className="bg-amber-800/30 p-3 rounded-lg">
           <div className="text-xs text-amber-200">
-            🤠 <strong>Showdown Mode:</strong> Perfect for charts with positive and negative values that square off from a center line (like Risk vs Resiliency). Use negative values for one side and positive for the other.
+            🤠 <strong>Showdown Mode:</strong> Perfect for charts with positive and negative values that square off from a center line (like Performance vs Targets). Use negative values for one side and positive for the other.
           </div>
         </div>
       )}
