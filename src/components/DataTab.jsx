@@ -61,7 +61,7 @@ const DataTab = ({
           {config.diverging && (
             <div className="bg-purple-900/30 p-3 rounded-lg">
               <div className="text-xs text-purple-200">
-                💡 <strong>Diverging Mode Active:</strong> Use negative values for left-side bars (risk) and positive values for right-side bars (resiliency). 
+                💡 <strong>Diverging Mode Active:</strong> Use negative values for left-side bars (current) and positive values for right-side bars (targets). 
                 Use the <span className="bg-red-500 px-1 rounded text-white">−</span> and <span className="bg-green-500 px-1 rounded text-white">+</span> buttons to quickly convert datasets.
               </div>
             </div>

@@ -88,20 +88,20 @@ export const INTERACTION_MODES = ['point', 'nearest', 'index', 'dataset', 'x', '
 export const CHART_TEMPLATES = {
   divergingBar: {
     name: 'Diverging Bar Chart',
-    description: 'Perfect for risk vs. resiliency, before vs. after comparisons',
+    description: 'Perfect for performance vs. targets, before vs. after comparisons',
     config: {
       type: 'bar',
       orientation: 'horizontal',
-      title: 'Risk & Resiliency Calculator',
+      title: 'Performance & Goals Tracker',
       showLegend: true,
       showGrid: true,
       legendPosition: 'top',
       stacked: false,
       diverging: true,
-      labels: ['Fighter', 'Fidelity', 'Fitness', 'Family', 'Finances', 'Future', 'Critical Stressors'],
+      labels: ['Strategy', 'Operations', 'Quality', 'Customer', 'Finance', 'Growth', 'Innovation'],
       datasets: [
         {
-          name: 'Risk Factors',
+          name: 'Current Performance',
           data: [-50, -60, -30, -40, -70, -50, -80],
           color: '#ef4444',
           borderWidth: 0,
@@ -110,7 +110,7 @@ export const CHART_TEMPLATES = {
           backgroundFillMax: 100
         },
         {
-          name: 'Resiliency',
+          name: 'Target Goals',
           data: [70, 80, 85, 60, 40, 65, 30],
           color: '#10b981',
           borderWidth: 0,
