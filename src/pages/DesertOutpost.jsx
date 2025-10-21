@@ -42,8 +42,8 @@ const DesertOutpost = () => {
 
   const handleBuildingClick = (building) => {
     if (building.status === 'open' || building.status === 'coming-soon') {
-      // Simple navigation - Vite handles the base path
-      window.location.href = building.path;
+      // Use relative navigation to preserve base path
+      window.location.href = '.' + building.path;
     }
   };
 
