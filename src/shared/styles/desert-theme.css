@@ -1,0 +1,38 @@
+/* Shared Desert Outpost styles */
+/* Can be imported by any app that wants consistent theming */
+
+:root {
+  --desert-amber-900: #78350f;
+  --desert-amber-800: #92400e;
+  --desert-amber-700: #b45309;
+  --desert-amber-600: #d97706;
+  --desert-amber-500: #f59e0b;
+  --desert-amber-400: #fbbf24;
+  --desert-amber-300: #fcd34d;
+  --desert-amber-200: #fde68a;
+  --desert-amber-100: #fef3c7;
+}
+
+.desert-gradient {
+  background: linear-gradient(to bottom, var(--desert-amber-900), var(--desert-amber-800), var(--desert-amber-900));
+}
+
+.desert-card {
+  background: rgba(120, 53, 15, 0.2);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(217, 119, 6, 0.3);
+  border-radius: 0.5rem;
+}
+
+.desert-button {
+  background: rgba(146, 64, 14, 0.3);
+  color: #fde68a;
+  border: 1px solid rgba(217, 119, 6, 0.3);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  transition: all 0.3s ease;
+}
+
+.desert-button:hover {
+  background: rgba(180, 83, 9, 0.4);
+}

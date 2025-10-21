@@ -12,13 +12,13 @@ const DesertOutpost = () => {
       subtext: 'Where data comes to drink'
     },
     {
-      id: 'data-casino',
-      title: 'Data Casino',
-      icon: '🎰',
-      description: 'Analytics and statistical tools',
+      id: 'ditch-rider-academy',
+      title: 'Ditch Rider Academy',
+      icon: '�',
+      description: 'Master Angular pipes and data flow',
       status: 'coming-soon',
-      path: '/data-casino',
-      subtext: 'Roll the dice on insights'
+      path: '/ditch-rider-academy',
+      subtext: 'Channel data through the digital frontier'
     },
     {
       id: 'trading-post',
@@ -146,7 +146,7 @@ const DesertOutpost = () => {
             <div className="text-center mt-16">
               <div className="bg-amber-900/20 backdrop-blur-sm rounded-lg p-6 border border-amber-600/30 max-w-xl mx-auto">
                 <p className="text-amber-200 italic text-lg">
-                  "No man can walk out of his own story"
+                  "Go forth, and do decent things"
                 </p>
                 <p className="text-amber-300 text-sm mt-2">
                   - Sheriff Rango
