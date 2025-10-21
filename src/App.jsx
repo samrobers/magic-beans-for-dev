@@ -6,16 +6,14 @@ import ComingSoon from './pages/coming-soon/ComingSoon';
 const App = () => {
   // Simple routing based on pathname
   const path = window.location.pathname;
-  const basePath = '/magic-beans-for-dev';
   
-  // Remove base path for comparison
-  const routePath = path.startsWith(basePath) ? path.substring(basePath.length) : path;
-  
-  if (routePath === '/chart-saloon' || routePath === '/chart-saloon/') {
+  // For GitHub Pages, Vite handles the base path automatically
+  // We just need to check the routes relative to the base
+  if (path.endsWith('/chart-saloon') || path.endsWith('/chart-saloon/')) {
     return <ChartSaloon />;
   }
   
-  if (routePath === '/data-casino' || routePath === '/data-casino/') {
+  if (path.endsWith('/data-casino') || path.endsWith('/data-casino/')) {
     return (
       <ComingSoon 
         buildingName="Data Casino"
@@ -25,7 +23,7 @@ const App = () => {
     );
   }
   
-  if (routePath === '/trading-post' || routePath === '/trading-post/') {
+  if (path.endsWith('/trading-post') || path.endsWith('/trading-post/')) {
     return (
       <ComingSoon 
         buildingName="Trading Post"
@@ -35,7 +33,7 @@ const App = () => {
     );
   }
   
-  if (routePath === '/sheriffs-office' || routePath === '/sheriffs-office/') {
+  if (path.endsWith('/sheriffs-office') || path.endsWith('/sheriffs-office/')) {
     return (
       <ComingSoon 
         buildingName="Sheriff's Office"
