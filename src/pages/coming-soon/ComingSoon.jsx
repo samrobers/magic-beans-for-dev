@@ -9,7 +9,7 @@ const ComingSoon = ({ buildingName, buildingIcon, description }) => {
       {/* Back to Outpost Navigation */}
       <nav className="relative z-20 p-4">
         <button 
-          onClick={() => window.location.href = '/'}
+          onClick={() => window.location.href = './'}
           className="flex items-center gap-2 px-4 py-2 bg-amber-800/30 hover:bg-amber-700/40 text-amber-200 rounded-lg border border-amber-600/30 transition-all"
         >
           ⬅️ Back to Desert Outpost
