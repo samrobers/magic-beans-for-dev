@@ -2,7 +2,10 @@ import { Component, OnInit, AfterViewInit, OnDestroy, ElementRef, ViewChild } fr
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
-import anime from 'animejs';
+import { FormsModule } from '@angular/forms';
+// Use ESM entry for animejs to be compatible with modern bundlers
+// @ts-ignore: import of type-unsupported ESM entry
+import anime from 'animejs/lib/anime.es.js';
 import { BehaviorSubject } from 'rxjs';
 
 interface Subscriber {
@@ -16,7 +19,7 @@ interface Subscriber {
 @Component({
   selector: 'app-tutorial',
   standalone: true,
-  imports: [CommonModule, RouterLink, DragDropModule],
+  imports: [CommonModule, RouterLink, DragDropModule, FormsModule],
   template: `
     <div class="tutorial-container">
       <header class="tutorial-header">
