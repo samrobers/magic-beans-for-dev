@@ -1,0 +1,175 @@
+.academy-header {
+  background: linear-gradient(45deg, #8b4513, #a0522d);
+  border-bottom: 3px solid #654321;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23ffffff" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="%23ffffff" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="%23ffffff" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    pointer-events: none;
+  }
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.rango-avatar {
+  width: 60px;
+  height: 60px;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.1) rotate(5deg);
+  }
+
+  .hat {
+    width: 50px;
+    height: 20px;
+    background: #8b4513;
+    border-radius: 10px 10px 0 0;
+    position: absolute;
+    top: 0;
+    left: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: -5px;
+      left: 10px;
+      width: 30px;
+      height: 5px;
+      background: #654321;
+      border-radius: 2px;
+    }
+  }
+
+  .face {
+    width: 40px;
+    height: 40px;
+    background: #ffdbac;
+    border-radius: 50%;
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .eyes {
+    position: absolute;
+    top: 25px;
+    left: 20px;
+    width: 20px;
+    height: 10px;
+
+    .eye {
+      width: 6px;
+      height: 6px;
+      background: #000;
+      border-radius: 50%;
+      position: absolute;
+      animation: blink 3s infinite;
+
+      &.left {
+        left: 0;
+      }
+
+      &.right {
+        right: 0;
+      }
+    }
+  }
+}
+
+@keyframes blink {
+  0%,
+  90%,
+  100% {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0.1);
+  }
+}
+
+.academy-title {
+  font-family: "Creepster", cursive;
+  font-size: 2.5rem;
+  color: #ffd700;
+  text-shadow: 3px 3px 0px #8b4513, 6px 6px 0px rgba(0, 0, 0, 0.3);
+  margin: 0;
+  letter-spacing: 2px;
+}
+
+.navigation {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-link {
+  color: #ffd700;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  background: rgba(255, 215, 0, 0.1);
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
+    transition: left 0.5s ease;
+  }
+
+  &:hover {
+    background: rgba(255, 215, 0, 0.2);
+    border-color: #ffd700;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+
+    &::before {
+      left: 100%;
+    }
+  }
+
+  &.active {
+    background: #ffd700;
+    color: #8b4513;
+    font-weight: 700;
+  }
+}
