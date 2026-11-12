@@ -12,6 +12,15 @@ const DesertOutpost = () => {
       subtext: 'Where data comes to drink'
     },
     {
+      id: 'help-corral',
+      title: 'The Help Corral',
+      icon: '🤠',
+      description: 'Frontier know-how and answers to your questions',
+      status: 'open',
+      path: '/help-corral',
+      subtext: 'Where questions get roped and answers get branded'
+    },
+    {
       id: 'ditch-rider-academy',
       title: 'Ditch Rider Academy',
       icon: '�',

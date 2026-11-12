@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import DesertOutpost from './pages/DesertOutpost';
 import ChartSaloonApp from './apps/chart-saloon/index.jsx';
 import AngularAppWrapper from './components/AngularAppWrapper';
+import HelpCorral from './pages/help-corral/HelpCorral';
 import ComingSoon from './pages/coming-soon/ComingSoon';
 
 const App = () => {
@@ -20,6 +21,9 @@ const App = () => {
         
         {/* Ditch Rider Academy - Angular App */}
         <Route path="/ditch-rider-academy/*" element={<AngularAppWrapper />} />
+
+        {/* Help Corral - Cowboy Documentation */}
+        <Route path="/help-corral" element={<HelpCorral />} />
         
         {/* Coming Soon Pages */}
         <Route 
